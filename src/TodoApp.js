@@ -9,6 +9,14 @@ export default class TodoApp extends Component {
     this.state = {
       todos: []
     }
+    this.removeTodo = this.removeTodo.bind(this)    
+  }
+
+  removeTodo(id) {
+    let todos = this.state.todos.filter(todo => {
+      return parseInt(id, 10) !== todo.id
+    })
+    this.setState({ todos })
   }
 
   componentDidMount() {
@@ -24,7 +32,7 @@ export default class TodoApp extends Component {
   }
   
   render() {
-    return <Todos todos={this.state.todos}/>
+    return <Todos todos={this.state.todos} removeTodo={this.removeTodo} />
   }
 
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import Todo from './Todo'
 
-const Todos = ({todos, handleSubmit, removeTodo}) => {
+const Todos = ({todos, removeTodo}) => {
     let todoListItems =  todos.map(todo => {
-        return <Todo key={todo.id} todo={todo} removeTodo={removeTodo}/>
+        return <Todo key={todo.uuid} todo={todo} removeTodo={removeTodo}/>
     })
 
     return (

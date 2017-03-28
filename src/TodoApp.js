@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Todos from './components/Todos'
+import AddTodoForm from './components/AddTodoForm'
 import {get} from 'axios'
+import {v4 as generateUuid} from 'uuid'
 
 export default class TodoApp extends Component {
 
@@ -10,21 +12,30 @@ export default class TodoApp extends Component {
       todos: []
     }
     this.removeTodo = this.removeTodo.bind(this)    
+    this.addTodo = this.addTodo.bind(this)
   }
 
-  removeTodo(id) {
-    let todos = this.state.todos.filter(todo => {
-      return parseInt(id, 10) !== todo.id
+  removeTodo(uuid) {
+    const todos = this.state.todos.filter(todo => {
+      return uuid !== todo.uuid
     })
+    this.setState({ todos })
+  }
+
+  addTodo(title) {
+    let todos = this.state.todos
+    todos.unshift({ title, uuid: generateUuid() })
     this.setState({ todos })
   }
 
   componentDidMount() {
     get('https://jsonplaceholder.typicode.com/todos')
       .then(response => {
-        this.setState({
-          todos: response.data
+        const todos = response.data.map(todo => {
+          todo['uuid'] =  generateUuid()
+          return todo
         })
+        this.setState({ todos })
       })
       .catch(error => {
         console.error(error)
@@ -32,7 +43,12 @@ export default class TodoApp extends Component {
   }
   
   render() {
-    return <Todos todos={this.state.todos} removeTodo={this.removeTodo} />
+    return (
+      <div>
+        <AddTodoForm addTodo={this.addTodo}/>
+        <Todos todos={this.state.todos} removeTodo={this.removeTodo} />
+      </div>
+    )
   }
 
 }
